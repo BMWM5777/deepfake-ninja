@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>DilshaM5 | Deepfake Ninja (AI Biometric Defense)</title>
+    <meta name="description" content="Fruit Ninja style cybersecurity biometric defense game by DilshaM5. Slice spoof attacks, masks, and deepfakes with AI hand tracking in real time." />
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Background Mirror Video from Webcam -->
+      <video id="webcam-video" autoplay playsinline muted></video>
+
+      <!-- Cybernetic Matrix Grid -->
+      <div class="cyber-grid-overlay"></div>
+
+      <!-- Main Game Rendering Canvas -->
+      <canvas id="game-canvas"></canvas>
+
+      <!-- Interactive HUD and Modals Layer -->
+      <div id="hud-layer"></div>
+    </div>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

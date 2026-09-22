@@ -1,0 +1,23 @@
+services:
+  game:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: deepfake-ninja-app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/healthz"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: deepfake-ninja-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --url http://game:80
+    depends_on:
+      game:
+        condition: service_healthy

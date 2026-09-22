@@ -1,0 +1,43 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="d5_grad_primary" x1="20" y1="20" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00FFA3" />
+      <stop offset="50%" stop-color="#3C8DFC" />
+      <stop offset="100%" stop-color="#7C63FA" />
+    </linearGradient>
+    <linearGradient id="d5_grad_accent" x1="180" y1="20" x2="20" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00E5FF" />
+      <stop offset="100%" stop-color="#7C63FA" />
+    </linearGradient>
+    <filter id="d5_glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Outer Cyber Shield Hexagon -->
+  <polygon points="100,10 182,56 182,144 100,190 18,144 18,56"
+           stroke="url(#d5_grad_primary)" stroke-width="4" stroke-linejoin="round" fill="#070B18" fill-opacity="0.85" />
+
+  <!-- Inner Biometric Shield Ring -->
+  <polygon points="100,24 168,62 168,138 100,176 32,138 32,62"
+           stroke="url(#d5_grad_accent)" stroke-width="1.8" stroke-dasharray="6 4" stroke-opacity="0.6" fill="none" />
+
+  <!-- Corner Tech Reticle Accents -->
+  <path d="M18 72 L18 56 L34 56" stroke="#00FFA3" stroke-width="3" stroke-linecap="round" />
+  <path d="M182 72 L182 56 L166 56" stroke="#00E5FF" stroke-width="3" stroke-linecap="round" />
+  <path d="M18 128 L18 144 L34 144" stroke="#7C63FA" stroke-width="3" stroke-linecap="round" />
+  <path d="M182 128 L182 144 L166 144" stroke="#7C63FA" stroke-width="3" stroke-linecap="round" />
+
+  <!-- Stylized Monogram "D5" Cyber Ninja Blade Motif -->
+  <!-- "D" Section -->
+  <path d="M58 60 H92 C114 60 128 74 128 98 C128 122 114 136 92 136 H58 V60 Z M76 76 V120 H90 C103 120 110 111 110 98 C110 85 103 76 90 76 H76 Z" 
+        fill="url(#d5_grad_primary)" filter="url(#d5_glow)" />
+
+  <!-- "5" Section / Katana Slash Overlay -->
+  <path d="M116 60 H148 L142 74 H120 L118 90 C124 88 132 88 138 92 C147 96 152 105 152 116 C152 130 140 140 122 140 C110 140 102 135 98 128 L110 118 C113 122 117 125 122 125 C129 125 134 121 134 115 C134 109 129 105 120 105 C112 105 107 108 104 111 L108 60 Z"
+        fill="url(#d5_grad_accent)" filter="url(#d5_glow)" />
+
+  <!-- Central Laser Core Dot -->
+  <circle cx="100" cy="98" r="3.5" fill="#00FFA3" filter="url(#d5_glow)" />
+</svg>
