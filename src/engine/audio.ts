@@ -227,6 +227,44 @@ class SoundEngine {
     }
   }
 
+  // Celebratory victory fanfare for podium / top-10 achievements
+  public playPodiumCelebration(rank: number): void {
+    const settings = settingsManager.get();
+    if (!settings.sfxEnabled) return;
+    try {
+      const ctx = this.initCtx();
+      const notes = rank === 1
+        ? [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98] // C5, E5, G5, C6, E6, G6
+        : rank <= 3
+        ? [523.25, 659.25, 783.99, 1046.50] // Major arpeggio
+        : [587.33, 739.99, 880.00]; // Top 10 chime
+
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = rank === 1 ? 'sawtooth' : 'triangle';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+
+        const vol = 0.28 * settings.volume;
+        gain.gain.setValueAtTime(vol, ctx.currentTime + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.08 + (rank === 1 ? 0.45 : 0.3));
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.08);
+        osc.stop(ctx.currentTime + idx * 0.08 + (rank === 1 ? 0.46 : 0.32));
+      });
+    } catch (e) {
+      console.warn('Audio playPodiumCelebration error', e);
+    }
+  }
+
+  public unlockAudio(): void {
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume().catch(() => {});
+    }
+  }
+
   // Ambient cyber-rhythm background synth loop
   public startMusic(): void {
     const settings = settingsManager.get();

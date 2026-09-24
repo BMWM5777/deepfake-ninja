@@ -12,6 +12,7 @@ import { HUD } from './ui/hud';
 import { GameItem } from './game/entities/gameItem';
 import { translations } from './i18n/translations';
 import { soundEngine } from './engine/audio';
+import { sessionLeaderboard } from './game/leaderboard';
 
 class GameApp {
   private canvas: HTMLCanvasElement;
@@ -103,19 +104,29 @@ class GameApp {
       this.isMouseDown = false;
     });
 
-    // Touch support for mobile / touchscreens
-    window.addEventListener('touchstart', (e) => {
+    // Touch support for mobile / touchscreens / smart TV pointers
+    const handleTouchStart = (e: TouchEvent) => {
+      soundEngine.unlockAudio();
       this.isMouseDown = true;
       if (e.touches.length > 0) {
         onMove(e.touches[0].clientX, e.touches[0].clientY);
       }
-    });
+      if (e.target === this.canvas || gameState.status === 'playing') {
+        if (e.cancelable) e.preventDefault();
+      }
+    };
 
-    window.addEventListener('touchmove', (e) => {
+    const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         onMove(e.touches[0].clientX, e.touches[0].clientY);
       }
-    });
+      if (e.target === this.canvas || gameState.status === 'playing') {
+        if (e.cancelable) e.preventDefault();
+      }
+    };
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     window.addEventListener('touchend', () => {
       this.isMouseDown = false;
@@ -170,6 +181,12 @@ class GameApp {
     bladeManager.clear();
     particleEngine.clear();
     soundEngine.playGameStart();
+
+    // Assign fresh unique participant ID for each new session on the booth stand
+    sessionLeaderboard.generateNewParticipant().then((newPid) => {
+      this.hud.updateParticipantUI(newPid);
+    });
+
     gameState.startRound();
   }
 
@@ -183,43 +200,47 @@ class GameApp {
     const isWaitingForStart = gameState.status === 'menu' || gameState.status === 'gameover';
     const canTrackHands = this.isCameraReady && handTrackerService.isReady() && cameraService.isRunning();
 
-    if (isWaitingForStart && canTrackHands) {
-      const palmStatus = handTrackerService.getBothPalmsStatus(this.video, now);
-      this.currentPalms = palmStatus.palms;
-
-      if (palmStatus.bothOpen) {
-        this.palmHoldProgress = Math.min(1, this.palmHoldProgress + dt / this.palmHoldThreshold);
-        if (gameState.status === 'gameover') {
-          this.hud.updateGameOverPalmProgress(this.palmHoldProgress);
-        }
-        if (this.palmHoldProgress >= 1) {
-          this.hud.updateGameOverPalmProgress(0);
-          this.startGame();
-        }
-      } else {
-        // Smoothly decay if hands are lowered
-        this.palmHoldProgress = Math.max(0, this.palmHoldProgress - dt * 2.5);
-        if (gameState.status === 'gameover') {
-          this.hud.updateGameOverPalmProgress(this.palmHoldProgress);
-        }
-      }
-    } else if (!isWaitingForStart) {
-      if (this.palmHoldProgress > 0) {
-        this.hud.updateGameOverPalmProgress(0);
-      }
-      this.palmHoldProgress = 0;
-      this.currentPalms = [];
-    }
-
-    // 1. Process Hand Tracking for slicing
+    // 1. Unified Single-Pass Vision Processing (eliminates double-inference per frame)
     if (canTrackHands) {
-      const bladePoints = handTrackerService.getBladePoints(this.video, now);
-      for (const pt of bladePoints) {
+      const vision = handTrackerService.processFrame(this.video, now);
+
+      // Handle dual-palm high-five gesture in menu or game over
+      if (isWaitingForStart) {
+        this.currentPalms = vision.palmStatus.palms;
+
+        if (vision.palmStatus.bothOpen) {
+          this.palmHoldProgress = Math.min(1, this.palmHoldProgress + dt / this.palmHoldThreshold);
+          if (gameState.status === 'gameover') {
+            this.hud.updateGameOverPalmProgress(this.palmHoldProgress);
+          }
+          if (this.palmHoldProgress >= 1) {
+            this.hud.updateGameOverPalmProgress(0);
+            this.startGame();
+          }
+        } else {
+          // Smoothly decay if hands are lowered
+          this.palmHoldProgress = Math.max(0, this.palmHoldProgress - dt * 2.5);
+          if (gameState.status === 'gameover') {
+            this.hud.updateGameOverPalmProgress(this.palmHoldProgress);
+          }
+        }
+      }
+
+      // Handle blade points for slicing
+      for (const pt of vision.bladePoints) {
         const screenX = pt.x * this.canvas.width;
         const screenY = pt.y * this.canvas.height;
         bladeManager.addPoint(pt.handIndex, screenX, screenY, now);
         detectedBladePoints.push({ x: screenX, y: screenY });
       }
+    }
+
+    if (!isWaitingForStart) {
+      if (this.palmHoldProgress > 0) {
+        this.hud.updateGameOverPalmProgress(0);
+      }
+      this.palmHoldProgress = 0;
+      this.currentPalms = [];
     }
 
     // 2. Update Blade & Physics

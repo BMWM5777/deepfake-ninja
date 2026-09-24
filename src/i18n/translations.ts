@@ -3,7 +3,7 @@ export type Language = 'kk' | 'en' | 'ru';
 export interface Translations {
   gameTitle: string;
   gameSubtitle: string;
-  brandTagline: string;
+  verigramTagline: string;
   startGame: string;
   settings: string;
   close: string;
@@ -58,13 +58,25 @@ export interface Translations {
   noSessionsYet: string;
   badgeCut: string;
   badgeProtect: string;
+  badgeBonus: string;
+  bonusShieldDesc: string;
+  participantNumber: string;
+  rankFirst: string;
+  rankSecond: string;
+  rankThird: string;
+  rankTop10: string;
+  rankParticipant: string;
+  enterNamePrompt: string;
+  saveScoreBtn: string;
+  scoreSaved: string;
+  globalLeaderboardTitle: string;
 }
 
 export const translations: Record<Language, Translations> = {
   kk: {
     gameTitle: "Deepfake Ninja",
     gameSubtitle: "Anti-Spoofing & Liveness Detection",
-    brandTagline: "DilshaM5 биометриялық қауіпсіздік зертханасы",
+    verigramTagline: "Verigram биометриялық қауіпсіздік жүйесі",
     startGame: "ВЕРИФИКАЦИЯНЫ БАСТАУ",
     settings: "Баптаулар",
     close: "Жабу",
@@ -111,19 +123,31 @@ export const translations: Record<Language, Translations> = {
     detectedHands: "Анықталған қолдар",
     targetIntelTitle: "БИОМЕТРИЯЛЫҚ НЫСАНДАР",
     leaderboardTitle: "СЕССИЯ РЕКОРДТАРЫ",
-    boothStandTitle: "DILSHAM5 CYBER LAB // TECH EXPO",
+    boothStandTitle: "VERIGRAM STAND // EXPO",
     pressSpaceToStart: "[ БОС ОРЫН ТҮЙМЕСІ НЕМЕСЕ ЕКІ АЛАҚАНДЫ КӨРСЕТІҢІЗ ]",
     holdPalmsToStart: "ЕКІ АЛАҚАН АНЫҚТАЛДЫ! БАСТАУ ҮШІН ҰСТАП ТҰРЫҢЫЗ...",
     rankTitle: "ОРЫН",
     accuracyGrade: "ҚАУІПСІЗДІК ДЕҢГЕЙІ",
     noSessionsYet: "Ағымдағы сессияда әлі ойындар жоқ. Ойнап көріңіз!",
     badgeCut: "КЕСУ",
-    badgeProtect: "ҚОРҒАУ"
+    badgeProtect: "ҚОРҒАУ",
+    badgeBonus: "РУБИТЬ +ЖИЗНЬ",
+    bonusShieldDesc: "Қалқанды қалпына келтіреді (+1 өмір)",
+    participantNumber: "Қатысушы нөмірі",
+    rankFirst: "🥇 1-ОРЫН! БАС ЧЕМПИОН!",
+    rankSecond: "🥈 2-ОРЫН! ҮЗДІК ҚОРҒАУШЫ!",
+    rankThird: "🥉 3-ОРЫН! ЖҮЛДЕЛІ ОРЫН!",
+    rankTop10: "🎖️ ҚҰТТЫҚТАЙМЫЗ! СІЗ ТОП-10 ҚАТАРЫНДАСЫЗ!",
+    rankParticipant: "Сіздің орныңыз",
+    enterNamePrompt: "Атыңызды енгізіңіз",
+    saveScoreBtn: "РЕКОРДТЫ САҚТАУ",
+    scoreSaved: "РЕКОРД САҚТАЛДЫ!",
+    globalLeaderboardTitle: "ЛИДЕРБОРД"
   },
   en: {
     gameTitle: "Deepfake Ninja",
     gameSubtitle: "Anti-Spoofing & Liveness Detection",
-    brandTagline: "Powered by DilshaM5 Cyber Defense Lab",
+    verigramTagline: "Powered by Verigram Biometric Security",
     startGame: "START VERIFICATION",
     settings: "Settings",
     close: "Close",
@@ -147,7 +171,7 @@ export const translations: Record<Language, Translations> = {
     ruleProtectValid: "DO NOT TOUCH: KZ ID Card, KZ Residency, Live Selfie",
     ruleSlashSpeed: "Make swift slashing motions — fast slashes slice through attacks!",
     score: "Score",
-    shields: "Cyber Shields",
+    shields: "Verigram Shields",
     combo: "COMBO",
     overdrive: "LIVENESS OVERDRIVE",
     threatNeutralized: "Threat Neutralized!",
@@ -170,19 +194,31 @@ export const translations: Record<Language, Translations> = {
     detectedHands: "Hands Tracked",
     targetIntelTitle: "TARGET THREAT MATRIX",
     leaderboardTitle: "SESSION LEADERBOARD",
-    boothStandTitle: "DILSHAM5 CYBER LAB // TECH EXPO",
+    boothStandTitle: "VERIGRAM STAND // TECH EXPO",
     pressSpaceToStart: "[ PRESS SPACEBAR OR SHOW BOTH OPEN PALMS ]",
     holdPalmsToStart: "BOTH PALMS DETECTED! HOLD TO START...",
     rankTitle: "RANK",
     accuracyGrade: "DEFENSE RATING",
     noSessionsYet: "No completed games in this session yet. Play to set a record!",
     badgeCut: "SLICE",
-    badgeProtect: "PROTECT"
+    badgeProtect: "PROTECT",
+    badgeBonus: "SLICE +LIFE",
+    bonusShieldDesc: "Restores biometric shield (+1 life)",
+    participantNumber: "Participant ID",
+    rankFirst: "🥇 1ST PLACE! ABSOLUTE CHAMPION!",
+    rankSecond: "🥈 2ND PLACE! TOP DEFENDER!",
+    rankThird: "🥉 3RD PLACE! PODIUM FINISH!",
+    rankTop10: "🎖️ CONGRATULATIONS! YOU ARE IN TOP 10!",
+    rankParticipant: "Your Ranking Position",
+    enterNamePrompt: "Enter your name for leaderboard",
+    saveScoreBtn: "SAVE TO LEADERBOARD",
+    scoreSaved: "SCORE RECORDED!",
+    globalLeaderboardTitle: "LEADERBOARD"
   },
   ru: {
     gameTitle: "Deepfake Ninja",
     gameSubtitle: "Anti-Spoofing & Liveness Detection",
-    brandTagline: "Лаборатория биометрической киберзащиты DilshaM5",
+    verigramTagline: "Технологии биометрической защиты Verigram",
     startGame: "НАЧАТЬ ВЕРИФИКАЦИЮ",
     settings: "Настройки",
     close: "Закрыть",
@@ -206,7 +242,7 @@ export const translations: Record<Language, Translations> = {
     ruleProtectValid: "НЕ ТРОГАТЬ: Удостоверения личности РК, ВНЖ РК, живые селфи",
     ruleSlashSpeed: "Делайте резкие рубящие взмахи — скорость рассекает атаку!",
     score: "Счёт",
-    shields: "Щиты киберзащиты",
+    shields: "Щиты защиты Verigram",
     combo: "КОМБО",
     overdrive: "LIVENESS OVERDRIVE",
     threatNeutralized: "Угроза нейтрализована!",
@@ -229,14 +265,26 @@ export const translations: Record<Language, Translations> = {
     detectedHands: "Обнаружено рук",
     targetIntelTitle: "БИОМЕТРИЧЕСКИЕ ЦЕЛИ",
     leaderboardTitle: "РЕКОРДЫ ТЕКУЩЕЙ СЕССИИ",
-    boothStandTitle: "DILSHAM5 CYBER LAB // TECH EXPO",
+    boothStandTitle: "СТЕНД VERIGRAM // EXPO",
     pressSpaceToStart: "[ НАЖМИТЕ ПРОБЕЛ ИЛИ ПОКАЖИТЕ ОБЕ ЛАДОНИ ]",
     holdPalmsToStart: "ОБЕ ЛАДОНИ ОБНАРУЖЕНЫ! УДЕРЖИВАЙТЕ ДЛЯ СТАРТА...",
     rankTitle: "МЕСТО",
     accuracyGrade: "КЛАСС ЗАЩИТЫ",
     noSessionsYet: "В текущей сессии пока нет сыгранных игр. Сыграйте для рекорда!",
     badgeCut: "РУБИТЬ",
-    badgeProtect: "НЕ ТРОГАТЬ"
+    badgeProtect: "НЕ ТРОГАТЬ",
+    badgeBonus: "РУБИТЬ +ЖИЗНЬ",
+    bonusShieldDesc: "Восстанавливает защиту (+1 жизнь)",
+    participantNumber: "Номер участника",
+    rankFirst: "🥇 1-Е МЕСТО! АБСОЛЮТНЫЙ ЧЕМПИОН!",
+    rankSecond: "🥈 2-Е МЕСТО! ТОП БИОМЕТРИЧЕСКИЙ ЗАЩИТНИК!",
+    rankThird: "🥉 3-Е МЕСТО! ПРИЗОВОЙ РАНГ!",
+    rankTop10: "🎖️ ПОЗДРАВЛЯЕМ! ВЫ В ТОП-10 СЕЗОНА!",
+    rankParticipant: "Ваше место в рейтинге",
+    enterNamePrompt: "Введите имя для таблицы лидеров",
+    saveScoreBtn: "СОХРАНИТЬ В ЛИДЕРБОРД",
+    scoreSaved: "РЕЗУЛЬТАТ ЗАФИКСИРОВАН!",
+    globalLeaderboardTitle: "ЛИДЕРБОРД"
   }
 };
 
@@ -248,7 +296,7 @@ export const itemTranslations: Record<Language, Record<string, string>> = {
     SPOOF_MASK: "3D МАСКА ШАБУЫЛЫ",
     SPOOF_DEEPFAKE: "ЖАСАНДЫ ДИПФЕЙК",
     SPOOF_EMULATOR: "ВИРТУАЛДЫ КАМЕРА",
-    BONUS_SHIELD: "CYBER OVERDRIVE"
+    BONUS_SHIELD: "ЩИТ VERIGRAM // +1 ӨМІР"
   },
   en: {
     VALID_ID: "KZ NATIONAL ID",
@@ -257,7 +305,7 @@ export const itemTranslations: Record<Language, Record<string, string>> = {
     SPOOF_MASK: "3D MASK ATTACK",
     SPOOF_DEEPFAKE: "AI DEEPFAKE",
     SPOOF_EMULATOR: "VIRTUAL CAMERA",
-    BONUS_SHIELD: "CYBER OVERDRIVE"
+    BONUS_SHIELD: "VERIGRAM SHIELD // +1 LIFE"
   },
   ru: {
     VALID_ID: "УДОСТОВЕРЕНИЕ РК",
@@ -266,7 +314,7 @@ export const itemTranslations: Record<Language, Record<string, string>> = {
     SPOOF_MASK: "АТАКА 3D-МАСКОЙ",
     SPOOF_DEEPFAKE: "ИИ ДИПФЕЙК",
     SPOOF_EMULATOR: "ВИРТУАЛЬНАЯ КАМЕРА",
-    BONUS_SHIELD: "CYBER OVERDRIVE"
+    BONUS_SHIELD: "ЩИТ VERIGRAM // +1 ЖИЗНЬ"
   }
 };
 

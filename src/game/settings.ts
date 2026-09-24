@@ -12,7 +12,7 @@ export interface GameSettings {
   volume: number;
 }
 
-const STORAGE_KEY = 'dilsham5_deepfake_ninja_settings_v1';
+const STORAGE_KEY = 'verigram_deepfake_ninja_settings_v1';
 
 class SettingsManager {
   private settings: GameSettings;

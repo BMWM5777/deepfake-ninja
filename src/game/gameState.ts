@@ -3,7 +3,7 @@ import { soundEngine } from '../engine/audio';
 import { particleEngine } from '../engine/particles';
 import { translations, itemTranslations } from '../i18n/translations';
 import { settingsManager } from './settings';
-import { sessionLeaderboard } from './leaderboard';
+import { sessionLeaderboard, ScoreSubmissionResult } from './leaderboard';
 import confetti from 'canvas-confetti';
 
 export class GameStateManager {
@@ -20,6 +20,7 @@ export class GameStateManager {
   public spoofsMissed: number = 0;
   public isOverdriveActive: boolean = false;
   public overdriveTime: number = 0;
+  public lastSubmission: ScoreSubmissionResult | null = null;
 
   private listeners: Array<() => void> = [];
 
@@ -36,6 +37,7 @@ export class GameStateManager {
     this.spoofsMissed = 0;
     this.isOverdriveActive = false;
     this.overdriveTime = 0;
+    this.lastSubmission = null;
 
     soundEngine.startMusic();
     this.notify();
@@ -111,7 +113,7 @@ export class GameStateManager {
       }
 
     } else if (item.category === 'bonus') {
-      // Cyber Overdrive Bonus
+      // Verigram Overdrive Bonus
       this.score += 200;
       this.shields = Math.min(this.maxShields, this.shields + 1);
       this.isOverdriveActive = true;
@@ -120,7 +122,7 @@ export class GameStateManager {
       soundEngine.playComboFanfare(4);
       particleEngine.triggerScreenFlash('rgba(124, 99, 250, 0.4)', 0.4);
       particleEngine.addSliceSparks(hitX, hitY, '#7C63FA', 40);
-      particleEngine.addFloatingText(`CYBER OVERDRIVE! +1 SHIELD`, hitX, hitY, '#7C63FA', 1.3);
+      particleEngine.addFloatingText(`VERIGRAM OVERDRIVE! +1 SHIELD`, hitX, hitY, '#7C63FA', 1.3);
     }
 
     this.notify();
@@ -155,27 +157,85 @@ export class GameStateManager {
     this.notify();
   }
 
-  private triggerGameOver(): void {
+  private async triggerGameOver(): Promise<void> {
     this.status = 'gameover';
     soundEngine.stopMusic();
 
-    // Record real score in session leaderboard
-    sessionLeaderboard.addScore(this.score, this.getAccuracy(), this.threatsNeutralized);
+    try {
+      this.lastSubmission = await sessionLeaderboard.submitScore(
+        this.score,
+        this.getAccuracy(),
+        this.threatsNeutralized
+      );
+    } catch (e) {
+      console.warn('Score submission error:', e);
+    }
 
-    const accuracy = this.getAccuracy();
-    if (accuracy >= 80) {
-      try {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-      } catch (e) {
-        // ignore
+    if (this.lastSubmission) {
+      const rank = this.lastSubmission.rank;
+      if (rank <= 10) {
+        soundEngine.playPodiumCelebration(rank);
+        this.launchCelebration(rank);
       }
     }
 
     this.notify();
+  }
+
+  private launchCelebration(rank: number): void {
+    try {
+      if (rank === 1) {
+        // Gold Grand Champion
+        confetti({
+          particleCount: 160,
+          spread: 100,
+          origin: { y: 0.5 },
+          colors: ['#FFD700', '#FFA500', '#00FFA3', '#FFFFFF']
+        });
+        setTimeout(() => {
+          confetti({
+            particleCount: 90,
+            angle: 60,
+            spread: 75,
+            origin: { x: 0 },
+            colors: ['#FFD700', '#00FFA3']
+          });
+          confetti({
+            particleCount: 90,
+            angle: 120,
+            spread: 75,
+            origin: { x: 1 },
+            colors: ['#FFD700', '#00FFA3']
+          });
+        }, 350);
+      } else if (rank === 2) {
+        // Silver Defender
+        confetti({
+          particleCount: 130,
+          spread: 85,
+          origin: { y: 0.55 },
+          colors: ['#E2E8F0', '#38BDF8', '#00FFA3']
+        });
+      } else if (rank === 3) {
+        // Bronze Podium
+        confetti({
+          particleCount: 110,
+          spread: 80,
+          origin: { y: 0.55 },
+          colors: ['#CD7F32', '#F59E0B', '#00FFA3']
+        });
+      } else {
+        // Top 10 High Performer
+        confetti({
+          particleCount: 80,
+          spread: 65,
+          origin: { y: 0.6 },
+          colors: ['#00FFA3', '#7C63FA', '#38BDF8']
+        });
+      }
+    } catch (err) {
+      // Confetti fallback
+    }
   }
 
   public getAccuracy(): number {

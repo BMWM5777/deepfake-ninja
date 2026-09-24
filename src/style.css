@@ -65,7 +65,8 @@ body, html {
   object-fit: cover;
   transform: scaleX(-1);
   opacity: 0.32;
-  filter: contrast(1.15) brightness(0.85) saturate(1.25) hue-rotate(8deg);
+  /* Optimized for high FPS across all browsers (Safari, Firefox, TVs, mobile) */
+  filter: brightness(0.9);
   z-index: 1;
   transition: opacity 0.5s ease;
 }
@@ -473,6 +474,21 @@ body, html {
   gap: 4px;
 }
 
+.panel-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 20px;
+  line-height: 1;
+}
+
+.panel-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .panel-tag {
   align-self: flex-start;
   font-size: 10px;
@@ -481,6 +497,11 @@ body, html {
   padding: 3px 10px;
   border-radius: 12px;
   text-transform: uppercase;
+  line-height: 14px;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 20px;
 }
 
 .panel-tag.danger {
@@ -495,10 +516,82 @@ body, html {
   border: 1px solid rgba(60, 141, 252, 0.3);
 }
 
+.panel-tag.cyan {
+  background: rgba(0, 229, 255, 0.12);
+  color: #00E5FF;
+  border: 1px solid rgba(0, 229, 255, 0.45);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+}
+
+.live-pulse-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #00FFA3;
+  background: rgba(0, 255, 163, 0.1);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  padding: 0 8px;
+  border-radius: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  line-height: normal;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00FFA3;
+  box-shadow: 0 0 8px #00FFA3;
+  animation: pulseLiveDot 1.4s infinite ease-in-out;
+}
+
+@keyframes pulseLiveDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.5; }
+}
+
+.btn-icon-refresh {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  padding: 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.btn-icon-refresh:hover {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: #00E5FF;
+  color: #00E5FF;
+}
+
+.btn-icon-refresh.spinning svg {
+  animation: spinIcon 0.6s linear infinite;
+}
+
+@keyframes spinIcon {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .panel-header h3 {
+  margin: 0;
   font-size: 17px;
   font-weight: 800;
   letter-spacing: 0.5px;
+  line-height: 1.2;
 }
 
 /* Intel Target Cards */
@@ -582,6 +675,36 @@ body, html {
   border-radius: 6px;
   background: #00FFA3;
   color: #06080F;
+}
+
+.bonus-card {
+  background: rgba(124, 99, 250, 0.08);
+  border: 1px solid rgba(124, 99, 250, 0.3);
+}
+
+.bonus-card:hover {
+  background: rgba(124, 99, 250, 0.16);
+  border-color: rgba(124, 99, 250, 0.6);
+  transform: translateX(4px);
+}
+
+.badge-bonus {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #7C63FA 0%, #00E5FF 100%);
+  color: #FFFFFF;
+  box-shadow: 0 0 10px rgba(124, 99, 250, 0.45);
+  letter-spacing: 0.5px;
+}
+
+.intel-thumb.bonus-thumb {
+  background: rgba(124, 99, 250, 0.22);
+  padding: 6px;
+  box-shadow: 0 0 12px rgba(124, 99, 250, 0.4);
+  border-color: rgba(124, 99, 250, 0.5);
+  object-fit: contain;
 }
 
 .intel-desc {
@@ -690,7 +813,7 @@ body, html {
   margin-bottom: 12px;
 }
 
-.cyber-verified-chip {
+.verigram-verified-chip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1143,3 +1266,409 @@ body, html {
   background: rgba(255, 255, 255, 0.12);
   transform: translateY(-2px);
 }
+
+/* ==========================================================================
+   PARTICIPANT BADGE & RANK CELEBRATION
+   ========================================================================== */
+.participant-badge-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(124, 99, 250, 0.14);
+  border: 1px solid rgba(124, 99, 250, 0.35);
+  border-radius: 12px;
+  padding: 8px 18px;
+  margin-bottom: 14px;
+}
+
+.p-badge-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+}
+
+.p-badge-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 900;
+  color: #00E5FF;
+  letter-spacing: 1px;
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+}
+
+.rank-celebration-banner {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  font-weight: 800;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  animation: popCelebration 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.rank-celebration-banner.active {
+  display: flex;
+}
+
+@keyframes popCelebration {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.rank-celebration-banner .trophy-anim {
+  font-size: 26px;
+  display: inline-block;
+  animation: bounceTrophy 1.4s infinite ease-in-out;
+}
+
+@keyframes bounceTrophy {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.1); }
+}
+
+.rank-celebration-banner.rank-first {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.28) 0%, rgba(245, 158, 11, 0.38) 100%);
+  border: 1.5px solid #FFD700;
+  color: #FFF275;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.45);
+}
+
+.rank-celebration-banner.rank-second {
+  background: linear-gradient(135deg, rgba(226, 232, 240, 0.25) 0%, rgba(148, 163, 184, 0.35) 100%);
+  border: 1.5px solid #E2E8F0;
+  color: #F8FAFC;
+  box-shadow: 0 0 20px rgba(226, 232, 240, 0.35);
+}
+
+.rank-celebration-banner.rank-third {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(180, 83, 9, 0.35) 100%);
+  border: 1.5px solid #F59E0B;
+  color: #FDE68A;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+}
+
+.rank-celebration-banner.rank-top10 {
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.2) 0%, rgba(0, 229, 255, 0.25) 100%);
+  border: 1.5px solid #00FFA3;
+  color: #A7F3D0;
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.35);
+}
+
+.rank-celebration-banner.rank-participant {
+  background: rgba(124, 99, 250, 0.12);
+  border: 1px solid rgba(124, 99, 250, 0.25);
+  color: #E2E8F0;
+  font-size: 14px;
+}
+
+/* Save to Shared Leaderboard Form */
+.leaderboard-save-box {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.cyber-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(124, 99, 250, 0.35);
+  border-radius: 14px;
+  padding: 13px 18px;
+  color: #FFFFFF;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.cyber-input:focus {
+  border-color: #00E5FF;
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.cyber-input::placeholder {
+  color: rgba(148, 163, 184, 0.6);
+  font-family: 'Outfit', sans-serif;
+}
+
+.btn-save-record {
+  padding: 13px 22px;
+  background: linear-gradient(135deg, #00FFA3 0%, #00E5FF 100%);
+  border: none;
+  border-radius: 14px;
+  color: #06080F;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-save-record:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 255, 163, 0.5);
+}
+
+.btn-save-record:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Leaderboard row tags & participant badges */
+.p-name-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.p-pid-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #00E5FF;
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.lb-row.is-self {
+  background: rgba(124, 99, 250, 0.22) !important;
+  border-left: 3px solid #00E5FF !important;
+}
+
+.hud-participant-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  color: #00E5FF;
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.8px;
+}
+
+.ticker-participant {
+  font-family: 'JetBrains Mono', monospace;
+  color: #00E5FF;
+  font-weight: 800;
+}
+
+/* Accessibility & Smart TV Remote Navigation */
+:focus-visible {
+  outline: 3px solid #00E5FF !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.7) !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN: SMART TVS & 4K DISPLAYS (>= 1920px)
+   ========================================================================== */
+@media (min-width: 1920px) and (min-height: 1080px) {
+  .expo-main-container {
+    grid-template-columns: 420px 1fr 420px;
+    gap: 36px;
+  }
+  
+  .portal-main-title {
+    font-size: 58px;
+  }
+  
+  .btn-arcade-start {
+    padding: 22px 52px;
+    font-size: 20px;
+  }
+  
+  .gameover-card {
+    max-width: 680px;
+    padding: 44px;
+  }
+  
+  .stat-value {
+    font-size: 36px;
+  }
+  
+  .hud-brand-name {
+    font-size: 20px;
+  }
+  
+  .hud-top {
+    top: 30px;
+    left: 48px;
+    right: 48px;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN: TABLETS & COMPACT DESKTOPS (<= 1100px)
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .expo-main-container {
+    grid-template-columns: 290px 1fr 290px;
+    gap: 16px;
+  }
+  
+  .expo-panel {
+    padding: 16px;
+  }
+  
+  .portal-main-title {
+    font-size: 36px;
+  }
+  
+  .hologram-portal-container {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN: MOBILE PHONES & PORTRAIT TABLETS (<= 860px)
+   ========================================================================== */
+@media (max-width: 860px) {
+  .expo-booth-hud {
+    padding: 12px;
+    padding-top: max(12px, env(safe-area-inset-top));
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  
+  .expo-top-bar {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  
+  .expo-main-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 18px;
+  }
+  
+  .expo-center-showcase {
+    order: -1; /* Display hero and play button first on mobile */
+    padding: 20px 0;
+  }
+  
+  .portal-main-title {
+    font-size: 30px;
+    line-height: 1.15;
+  }
+  
+  .portal-subtitle {
+    font-size: 13px;
+  }
+  
+  .hologram-portal-container {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .expo-panel {
+    max-height: 380px;
+  }
+  
+  /* Gameplay HUD on Mobile */
+  .hud-top {
+    top: max(10px, env(safe-area-inset-top));
+    left: 12px;
+    right: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .hud-brand {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+  
+  .hud-logo {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .hud-brand-name {
+    font-size: 13px;
+  }
+  
+  .hud-shields-container {
+    padding: 6px 14px;
+  }
+  
+  .score-digital {
+    font-size: 26px;
+  }
+  
+  /* Game Over Modal on Mobile */
+  .modal-card {
+    max-width: 95vw;
+    max-height: 90vh;
+    padding: 20px 16px;
+    overflow-y: auto;
+  }
+  
+  .gameover-title {
+    font-size: 26px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .stat-box {
+    padding: 10px;
+  }
+  
+  .stat-value {
+    font-size: 22px;
+  }
+  
+  .leaderboard-save-box {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .btn-save-record {
+    width: 100%;
+    padding: 12px;
+  }
+  
+  .gameover-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* ==========================================================================
+   EXTRA MOBILE TOUCH ENHANCEMENTS (<= 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  .hud-shields-container {
+    display: none; /* Hide middle shield pulse on very narrow screens to prevent HUD overflow */
+  }
+  
+  .btn-arcade-start {
+    width: 100%;
+    justify-content: center;
+    padding: 16px 24px;
+  }
+}
+

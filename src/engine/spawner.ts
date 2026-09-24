@@ -43,16 +43,17 @@ export class Spawner {
       const type = this.pickItemType(i === 0 && spawnBonus);
       const img = this.getImageForType(type, assets);
 
-      const margin = width * 0.15;
-      const x = margin + Math.random() * (width - 2 * margin);
-      const y = height + 35;
+      const margin = Math.max(90, Math.min(width * 0.18, 140));
+      const x = margin + Math.random() * Math.max(40, (width - 2 * margin));
+      const y = height + 45;
 
-      const targetApexY = height * (0.20 + Math.random() * 0.22);
+      const targetApexY = height * (0.18 + Math.random() * 0.24);
       const apexDist = y - targetApexY;
-      const vy = -Math.sqrt(2 * this.gravity * apexDist);
+      const effectiveGravity = this.gravity * Math.max(0.85, Math.min(1.35, height / 900));
+      const vy = -Math.sqrt(2 * effectiveGravity * apexDist);
 
       const centerX = width * 0.5;
-      const vx = ((centerX - x) / (width * 0.5)) * (90 + Math.random() * 130) + (Math.random() - 0.5) * 80;
+      const vx = ((centerX - x) / (width * 0.5)) * (90 + Math.random() * 120) + (Math.random() - 0.5) * 70;
 
       items.push(new GameItem(type, x, y, vx, vy, img));
     }
@@ -101,7 +102,7 @@ export class Spawner {
       case 'SPOOF_EMULATOR':
         return assets.cameraEmulator;
       case 'BONUS_SHIELD':
-        return assets.brandLogo;
+        return assets.verigramLogo;
     }
   }
 }

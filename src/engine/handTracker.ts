@@ -19,6 +19,11 @@ export interface BothPalmsStatus {
   palms: PalmInfo[];
 }
 
+export interface FrameVisionResult {
+  bladePoints: HandPoint[];
+  palmStatus: BothPalmsStatus;
+}
+
 function checkIsOpenPalm(landmarks: Array<{ x: number; y: number }>): boolean {
   if (!landmarks || landmarks.length < 21) return false;
   const wrist = landmarks[0];
@@ -92,9 +97,10 @@ export class HandTrackerService {
           },
           runningMode: 'VIDEO',
           numHands: 2,
-          minHandDetectionConfidence: 0.35,
-          minHandPresenceConfidence: 0.35,
-          minTrackingConfidence: 0.35
+          // Calibrated thresholds: prevents dropping to heavy Palm Detector
+          minHandDetectionConfidence: 0.5,
+          minHandPresenceConfidence: 0.5,
+          minTrackingConfidence: 0.5
         });
       };
 
@@ -136,7 +142,11 @@ export class HandTrackerService {
       return null;
     }
 
+    // Skip redundant inferences if video hasn't progressed or if called within 18ms (~55 FPS)
     if (video.currentTime > 0 && video.currentTime === this.lastVideoTime && this.lastResult) {
+      return this.lastResult;
+    }
+    if (this.lastProcessTimestamp > 0 && timestamp - this.lastProcessTimestamp < 18 && this.lastResult) {
       return this.lastResult;
     }
 
@@ -153,20 +163,37 @@ export class HandTrackerService {
     }
   }
 
-  // Extract blade tip positions with persistent spatial tracking to prevent left/right hand index swapping
-  public getBladePoints(video: HTMLVideoElement, timestamp: number): HandPoint[] {
+  // Single-pass vision extraction: extracts both blade points and dual-palm status in 1 inference run
+  public processFrame(video: HTMLVideoElement, timestamp: number): FrameVisionResult {
     const result = this.detect(video, timestamp);
     if (!result || !result.landmarks || result.landmarks.length === 0) {
-      return [];
+      return {
+        bladePoints: [],
+        palmStatus: { bothOpen: false, palms: [] }
+      };
     }
 
-    // 1. Gather all candidate blade points from current frame
     const candidates: Array<{ x: number; y: number; rawX: number; rawY: number }> = [];
+    const palms: PalmInfo[] = [];
+    let openCount = 0;
 
     for (let h = 0; h < result.landmarks.length; h++) {
       const landmarks = result.landmarks[h];
       if (!landmarks || landmarks.length < 9) continue;
 
+      // 1. Palm status (high-five detection)
+      const isOpen = checkIsOpenPalm(landmarks);
+      if (isOpen) openCount++;
+
+      const pX = (landmarks[0].x + landmarks[5].x + landmarks[9].x + landmarks[17].x) * 0.25;
+      const pY = (landmarks[0].y + landmarks[5].y + landmarks[9].y + landmarks[17].y) * 0.25;
+      palms.push({
+        isOpen,
+        x: 1 - pX,
+        y: pY
+      });
+
+      // 2. Blade tip candidates (index & middle fingers)
       const indexTip = landmarks[8];
       const middleTip = landmarks[12];
       const rawX = (indexTip.x + middleTip.x) * 0.5;
@@ -181,16 +208,14 @@ export class HandTrackerService {
       });
     }
 
-    // 2. Filter out stale tracks (older than 220ms)
+    // 3. Match candidate points to persistent tracks (prevents hand index swapping)
     this.activeTracks = this.activeTracks.filter(t => timestamp - t.lastTimestamp < 220);
-
-    // 3. Match each candidate to the nearest active track (spatial consistency)
     const points: HandPoint[] = [];
     const usedTrackIds = new Set<number>();
 
     for (const c of candidates) {
       let bestTrack: ActiveTrack | null = null;
-      let minDistance = 0.35; // Maximum allowed normalized distance (35% screen width)
+      let minDistance = 0.35; // Maximum normalized distance (35% screen)
 
       for (const t of this.activeTracks) {
         if (usedTrackIds.has(t.id)) continue;
@@ -203,13 +228,11 @@ export class HandTrackerService {
 
       let assignedId: number;
       if (bestTrack) {
-        // Matched existing hand track
         assignedId = bestTrack.id;
         bestTrack.x = c.x;
         bestTrack.y = c.y;
         bestTrack.lastTimestamp = timestamp;
       } else {
-        // Assign new ID: 0 for left side of screen, 1 for right side of screen
         const id0InUse = this.activeTracks.some(t => t.id === 0) || usedTrackIds.has(0);
         const id1InUse = this.activeTracks.some(t => t.id === 1) || usedTrackIds.has(1);
 
@@ -238,39 +261,22 @@ export class HandTrackerService {
       });
     }
 
-    return points;
+    return {
+      bladePoints: points,
+      palmStatus: {
+        bothOpen: openCount >= 2,
+        palms
+      }
+    };
   }
 
-  // Detect if both hands are held up with open palms ("high-five" gesture)
+  // Backwards compatibility wrappers
+  public getBladePoints(video: HTMLVideoElement, timestamp: number): HandPoint[] {
+    return this.processFrame(video, timestamp).bladePoints;
+  }
+
   public getBothPalmsStatus(video: HTMLVideoElement, timestamp: number): BothPalmsStatus {
-    const result = this.detect(video, timestamp);
-    if (!result || !result.landmarks || result.landmarks.length === 0) {
-      return { bothOpen: false, palms: [] };
-    }
-
-    const palms: PalmInfo[] = [];
-    let openCount = 0;
-
-    for (let h = 0; h < result.landmarks.length; h++) {
-      const landmarks = result.landmarks[h];
-      const isOpen = checkIsOpenPalm(landmarks);
-      if (isOpen) openCount++;
-
-      // Palm center (average of wrist and MCP joints)
-      const pX = (landmarks[0].x + landmarks[5].x + landmarks[9].x + landmarks[17].x) * 0.25;
-      const pY = (landmarks[0].y + landmarks[5].y + landmarks[9].y + landmarks[17].y) * 0.25;
-
-      palms.push({
-        isOpen,
-        x: 1 - pX,
-        y: pY
-      });
-    }
-
-    return {
-      bothOpen: openCount >= 2,
-      palms
-    };
+    return this.processFrame(video, timestamp).palmStatus;
   }
 
   public isReady(): boolean {

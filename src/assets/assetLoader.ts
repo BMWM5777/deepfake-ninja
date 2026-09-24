@@ -5,7 +5,7 @@ export interface GameAssets {
   siliconeMask: HTMLImageElement;
   deepfakeFace: HTMLImageElement;
   cameraEmulator: HTMLImageElement;
-  brandLogo: HTMLImageElement;
+  verigramLogo: HTMLImageElement;
 }
 
 export class AssetLoader {
@@ -32,7 +32,7 @@ export class AssetLoader {
       siliconeMask: './assets/silicone_mask.jpg',
       deepfakeFace: './assets/deepfake_face.jpg',
       cameraEmulator: './assets/camera_emulator.jpg',
-      brandLogo: './logo.svg'
+      verigramLogo: './logo.svg'
     };
 
     const entries = Object.entries(imagePaths);
@@ -66,7 +66,7 @@ export class AssetLoader {
       this.assets.siliconeMask &&
       this.assets.deepfakeFace &&
       this.assets.cameraEmulator &&
-      this.assets.brandLogo
+      this.assets.verigramLogo
     );
   }
 
@@ -85,7 +85,7 @@ export class AssetLoader {
     ctx.fillStyle = '#00FFA3';
     ctx.font = 'bold 18px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('DILSHAM5', 128, 110);
+    ctx.fillText('VERIGRAM', 128, 110);
     ctx.fillText(name.toUpperCase(), 128, 150);
 
     const img = new Image();

@@ -69,63 +69,63 @@ export class GameItem {
         this.glowColor = '#00FFA3';
         this.label = '🇰🇿 ҚР ЖЕКЕ КУӘЛІК';
         this.scoreValue = 60;
-        this.width = 138;
-        this.height = 92;
-        this.radius = 58;
+        this.width = 180;
+        this.height = 120;
+        this.radius = 75;
         break;
       case 'VALID_VNJ':
         this.category = 'valid';
         this.glowColor = '#00FFA3';
         this.label = '🇰🇿 ҚР ВНЖ ҚҰЖАТЫ';
         this.scoreValue = 60;
-        this.width = 138;
-        this.height = 94;
-        this.radius = 58;
+        this.width = 180;
+        this.height = 122;
+        this.radius = 75;
         break;
       case 'VALID_SELFIE':
         this.category = 'valid';
         this.glowColor = '#00FFA3';
         this.label = 'LIVE SELFIE (ТІРІ АДАМ)';
         this.scoreValue = 50;
-        this.width = 114;
-        this.height = 114;
-        this.radius = 57;
+        this.width = 148;
+        this.height = 148;
+        this.radius = 74;
         break;
       case 'SPOOF_MASK':
         this.category = 'spoof';
         this.glowColor = '#FF0055';
         this.label = '3D MASK ATTACK';
         this.scoreValue = 100;
-        this.width = 114;
-        this.height = 114;
-        this.radius = 57;
+        this.width = 148;
+        this.height = 148;
+        this.radius = 74;
         break;
       case 'SPOOF_DEEPFAKE':
         this.category = 'spoof';
         this.glowColor = '#FF2E63';
         this.label = 'DEEPFAKE INJECTION';
         this.scoreValue = 150;
-        this.width = 114;
-        this.height = 114;
-        this.radius = 57;
+        this.width = 148;
+        this.height = 148;
+        this.radius = 74;
         break;
       case 'SPOOF_EMULATOR':
         this.category = 'spoof';
         this.glowColor = '#FF3366';
         this.label = 'VIRTUAL CAM SPOOF';
         this.scoreValue = 120;
-        this.width = 130;
-        this.height = 96;
-        this.radius = 58;
+        this.width = 170;
+        this.height = 125;
+        this.radius = 75;
         break;
       case 'BONUS_SHIELD':
         this.category = 'bonus';
         this.glowColor = '#7C63FA';
-        this.label = 'CYBER OVERDRIVE';
+        this.label = 'VERIGRAM OVERDRIVE';
         this.scoreValue = 200;
-        this.width = 100;
-        this.height = 100;
-        this.radius = 50;
+        this.width = 130;
+        this.height = 130;
+        this.radius = 65;
         break;
     }
   }
@@ -213,7 +213,7 @@ export class GameItem {
     if (this.image && this.image.complete && this.image.naturalWidth > 0) {
       // Draw rounded card image
       ctx.beginPath();
-      ctx.roundRect(-w / 2, -h / 2, w, h, 14);
+      ctx.roundRect(-w / 2, -h / 2, w, h, 18);
       ctx.clip();
       ctx.drawImage(this.image, -w / 2, -h / 2, w, h);
 
@@ -229,19 +229,19 @@ export class GameItem {
 
         // Holographic corner stamp
         ctx.fillStyle = 'rgba(0, 255, 163, 0.2)';
-        ctx.fillRect(w / 2 - 32, -h / 2 + 8, 24, 24);
+        ctx.fillRect(w / 2 - 38, -h / 2 + 8, 30, 30);
       }
     } else {
       ctx.fillStyle = this.category === 'valid' ? '#0F2C24' : '#2D0F18';
       ctx.strokeStyle = this.glowColor;
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.roundRect(-w / 2, -h / 2, w, h, 14);
+      ctx.roundRect(-w / 2, -h / 2, w, h, 18);
       ctx.fill();
       ctx.stroke();
 
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 12px sans-serif';
+      ctx.font = 'bold 14px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(this.label, 0, 5);
     }
@@ -257,11 +257,11 @@ export class GameItem {
     ctx.shadowColor = this.glowColor;
     ctx.shadowBlur = 12;
     ctx.beginPath();
-    ctx.roundRect(-w / 2, -h / 2, w, h, 14);
+    ctx.roundRect(-w / 2, -h / 2, w, h, 18);
     ctx.stroke();
 
     // High-tech corner brackets
-    const cornerSize = 16;
+    const cornerSize = 22;
     ctx.lineWidth = 3.5;
     ctx.strokeStyle = '#FFFFFF';
 
@@ -281,12 +281,12 @@ export class GameItem {
 
     // Bottom badge label
     ctx.shadowBlur = 0;
-    ctx.font = 'bold 11px sans-serif';
+    ctx.font = 'bold 13px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillStyle = this.glowColor;
     const currentLang = settingsManager.get().language;
     const localizedLabel = itemTranslations[currentLang]?.[this.type] || this.label;
-    ctx.fillText(localizedLabel, 0, h / 2 + 18);
+    ctx.fillText(localizedLabel, 0, h / 2 + 22);
 
     ctx.restore();
   }
@@ -333,10 +333,10 @@ export class GameItem {
 
   public isOutOfBounds(canvasHeight: number): boolean {
     if (!this.isSliced) {
-      return this.y > canvasHeight + 110 && this.vy > 0;
+      return this.y > canvasHeight + 150 && this.vy > 0;
     } else {
-      const h1Out = !this.half1 || (this.half1.y > canvasHeight + 140);
-      const h2Out = !this.half2 || (this.half2.y > canvasHeight + 140);
+      const h1Out = !this.half1 || (this.half1.y > canvasHeight + 180);
+      const h2Out = !this.half2 || (this.half2.y > canvasHeight + 180);
       return h1Out && h2Out;
     }
   }
